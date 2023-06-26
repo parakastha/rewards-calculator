@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
+import {Grid} from "@mui/material";
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 export const RewardsCalculator = () => {
     const [transactions, setTransactions] = useState([]);
@@ -48,29 +56,59 @@ export const RewardsCalculator = () => {
 
 
     return (
-        <div>
-            {Object.entries(calculateRewardsPerCustomer(transactions)).map(([customerName, data]) => (
-                <div key={customerName}>
+        <Grid container spacing={3} justifyContent={"center"}>
+            {Object.entries(calculateRewardsPerCustomer(transactions)).map(([customerName, customerData]) => (
+                <Grid item xs={12} sm={9} key={customerName}>
                     <h2>{customerName}</h2>
-                    <p>Total rewards: {data.total}</p>
-                    {Object.entries(data.monthly).map(([yearMonth, rewards]) => {
-                        const monthName = new Date(yearMonth).toLocaleString('default', {
-                            month: 'long',
-                            year: 'numeric'
-                        }); // We get both the month and the year from the date object
-                        return <p key={yearMonth}>Rewards in {monthName}: {rewards}</p>
-                    })}
+                    <h3>Total rewards: {customerData.total} points</h3>
 
-                    <h3>Transactions:</h3>
-                    {data.transactions.map((transaction, index) => (
-                        <div key={index}>
-                            <p>Date: {transaction.date}</p>
-                            <p>Amount: ${transaction.amount}</p>
-                            <p>Rewards: {transaction.rewards}</p>
-                        </div>
-                    ))}
-                </div>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Date</TableCell>
+                                    <TableCell align="right">Amount</TableCell>
+                                    <TableCell align="right">Rewards</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {customerData.transactions.map((transaction) => (
+                                    <TableRow key={transaction.date}>
+                                        <TableCell>{transaction.date}</TableCell>
+                                        <TableCell align="right">${transaction.amount}</TableCell>
+                                        <TableCell align="right">{transaction.rewards}</TableCell>
+                                    </TableRow>
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+
+                    <h3>Monthly Rewards</h3>
+                    <TableContainer component={Paper}>
+                        <Table>
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell>Month</TableCell>
+                                    <TableCell align="right">Rewards</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {Object.entries(customerData.monthly).map(([month, rewards]) => {
+                                    const date = new Date(month);
+                                    const formattedMonth = date.toLocaleString('default', {month: 'long'});
+
+                                    return (
+                                        <TableRow key={month}>
+                                            <TableCell>{formattedMonth}</TableCell>
+                                            <TableCell align="right">{rewards}</TableCell>
+                                        </TableRow>
+                                    );
+                                })}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
+                </Grid>
             ))}
-        </div>
+        </Grid>
     );
 }

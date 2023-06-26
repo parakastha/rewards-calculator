@@ -11,6 +11,13 @@ npm install -g json-server
 
 json-server --watch db.json --middlewares cors --port 3001
 
+# Install dependencies
+npm install
+
+# Run the app
+
+npm start
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
