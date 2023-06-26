@@ -15,8 +15,10 @@ json-server --watch db.json --middlewares cors --port 3001
 npm install
 
 # Run the app
-
 npm start
+
+# To run test
+npm test
 
 # Getting Started with Create React App
 

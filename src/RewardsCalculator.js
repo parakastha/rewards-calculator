@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import {Grid} from "@mui/material";
+import {Grid, Typography} from "@mui/material";
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
@@ -8,6 +8,39 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
+
+//Function to calculate rewards
+export const calculateRewards = (amount) => {
+    let rewards = 0;
+    if (amount > 100) {
+        rewards = (amount - 100) * 2 + 50;
+    } else {
+        rewards = amount - 50;
+    }
+    return rewards;
+}
+
+export const calculateRewardsPerCustomer = (transactions) => {
+    return transactions.reduce((acc, transaction) => {
+        const rewards = calculateRewards(transaction.amount);
+        const {customerName, date} = transaction;
+        const [year, month, day] = date.split("-").map(Number);
+        const localDate = new Date(year, month - 1, day);
+        const yearMonth = new Date(localDate.getFullYear(), localDate.getMonth());
+
+
+        if (!acc[customerName]) {
+            acc[customerName] = {total: 0, monthly: {}, transactions: []};
+        }
+
+        acc[customerName].total += rewards;
+        acc[customerName].monthly[yearMonth] = (acc[customerName].monthly[yearMonth] || 0) + rewards;
+        acc[customerName].transactions.push({...transaction, rewards});
+
+
+        return acc;
+    }, {});
+};
 
 export const RewardsCalculator = () => {
     const [transactions, setTransactions] = useState([]);
@@ -20,43 +53,13 @@ export const RewardsCalculator = () => {
         fetchTransactions();
     }, []);
 
-    //Function to calculate rewards
-
-    const calculateRewards = (amount) => {
-        let rewards = 0;
-        if (amount > 100) {
-            rewards = (amount - 100) * 2 + 50;
-        } else {
-            rewards = amount - 50;
-        }
-        return rewards;
-    }
-
-    const calculateRewardsPerCustomer = (transactions) => {
-        return transactions.reduce((acc, transaction) => {
-            const rewards = calculateRewards(transaction.amount);
-            const {customerName, date} = transaction;
-            const [year, month, day] = date.split("-").map(Number);
-            const localDate = new Date(year, month - 1, day);
-            const yearMonth = new Date(localDate.getFullYear(), localDate.getMonth());
-
-
-            if (!acc[customerName]) {
-                acc[customerName] = {total: 0, monthly: {}, transactions: []};
-            }
-
-            acc[customerName].total += rewards;
-            acc[customerName].monthly[yearMonth] = (acc[customerName].monthly[yearMonth] || 0) + rewards;
-            acc[customerName].transactions.push({...transaction, rewards});
-
-
-            return acc;
-        }, {});
-    };
 
 
     return (
         <Grid container spacing={3} justifyContent={"center"}>
+            <Grid item xs={12}>
+                <Typography variant="h6">Rewards Per Customer</Typography>
+            </Grid>
             {Object.entries(calculateRewardsPerCustomer(transactions)).map(([customerName, customerData]) => (
                 <Grid item xs={12} sm={9} key={customerName}>
                     <h2>{customerName}</h2>
