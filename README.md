@@ -1,3 +1,16 @@
+# Initialize a new React application
+npx create-react-app rewards-calculator
+
+# Install axios for making API calls
+npm install axios
+
+# Create the mock API
+npm install -g json-server
+
+# Run it with:
+
+json-server --watch db.json --middlewares cors --port 3001
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

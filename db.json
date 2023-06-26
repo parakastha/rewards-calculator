@@ -1,0 +1,28 @@
+{
+  "transactions": [
+    {
+      "id": 1,
+      "customerName": "John Doe",
+      "amount": 60,
+      "date": "2023-04-01"
+    },
+    {
+      "id": 2,
+      "customerName": "John Doe",
+      "amount": 150,
+      "date": "2023-04-20"
+    },
+    {
+      "id": 3,
+      "customerName": "Jane Doe",
+      "amount": 300,
+      "date": "2023-05-05"
+    },
+    {
+      "id": 4,
+      "customerName": "Jane Doe",
+      "amount": 90,
+      "date": "2023-06-10"
+    }
+  ]
+}
